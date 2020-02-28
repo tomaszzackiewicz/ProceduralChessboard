@@ -14,7 +14,6 @@ namespace ProceduralChessBoardGenerator{
 			isCursor = true;
 		}
 		
-		// Update is called once per frame
 		void Update () {
 			if(Input.GetKeyDown(KeyCode.Q) && !isInputDisabled){
 				Application.Quit();
@@ -38,7 +37,7 @@ namespace ProceduralChessBoardGenerator{
 		}
 		public void OnCursorInvisible(){
 			Cursor.visible = false;
-			  Cursor.lockState = CursorLockMode.Locked;
+			Cursor.lockState = CursorLockMode.Locked;
 		}
 		
 		void DisableInput(bool isInput){

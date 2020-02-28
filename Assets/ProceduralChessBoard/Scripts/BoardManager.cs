@@ -15,25 +15,26 @@ namespace ProceduralChessBoardGenerator{
 		public Text widthText;
 		public Text lengthText;
 		public Text popupText;
-		private List<GameObject> tiles;
-		int cubeCount;
-		float tileSize;
-		bool isReversed;
-		bool isRegular = true;
-		int factor = 1;
+
+		private List<GameObject> _tiles;
+		private int _cubeCount;
+		private float _tileSize;
+		private bool _isReversed;
+		private bool _isRegular = true;
+		private int _factor = 1;
 		
 		void Awake(){
 			var renderer = tilePrefab.GetComponent<MeshRenderer>();
-			tileSize = renderer.bounds.size.x;
-			cubeCount = (int)(size * size * factor);
+			_tileSize = renderer.bounds.size.x;
+			_cubeCount = (int)(size * size * _factor);
 		}
 
 		void Start () {
 			popUpWindow.SetActive(false);
 			if(EvenChecking(size) && MinimumChecking(size)){
 				widthText.text = size.ToString();
-				lengthText.text = (size * factor).ToString();
-				tiles = CreateTiles(cubeCount);	
+				lengthText.text = (size * _factor).ToString();
+				_tiles = CreateTiles(_cubeCount);	
 			}else{
 				StartCoroutine(PopUpWindowCor());
 			}
@@ -55,14 +56,14 @@ namespace ProceduralChessBoardGenerator{
 		
 		IEnumerator RecreateTilesCor(){
 			yield return new WaitForSeconds(1.0f);
-			cubeCount = (int)(size * size * factor);
-			tiles = CreateTiles(cubeCount);
+			_cubeCount = (int)(size * size * _factor);
+			_tiles = CreateTiles(_cubeCount);
 		}
 		
 		private List<GameObject> CreateTiles(int count){
 			int x = 0;
 			int z = 0;
-			tiles = new List<GameObject>();
+			_tiles = new List<GameObject>();
 			int n = 0;
 			for(int i = 0; i < count; i++){
 				GameObject tile = Instantiate(tilePrefab) as GameObject;
@@ -81,36 +82,32 @@ namespace ProceduralChessBoardGenerator{
 					
 				tile.transform.localPosition = new Vector3(x,0,z);
 				n++;
-				tiles.Add(tile);
+				_tiles.Add(tile);
 			}
 			
-			return tiles;
+			return _tiles;
 		}
 		
 		void NormalColors(GameObject tile, int i){
-			if(i % size == 0){
-				isReversed = !isReversed;
+			Renderer renderer = tile.GetComponent<Renderer>();
+			if (i % size == 0){
+				_isReversed = !_isReversed;
 			}
-			if(isReversed){
-				
-				Renderer renderer = tile.GetComponent<Renderer>();
+			if(_isReversed){
 				renderer.material.color = Color.white;
 			}else{
-				Renderer renderer = tile.GetComponent<Renderer>();
 				renderer.material.color = Color.black;	
 			}
 		}
 		
 		void ReversedColors(GameObject tile, int i){
-			if(i % size == 0){
-				isReversed = !isReversed;
+			Renderer renderer = tile.GetComponent<Renderer>();
+			if (i % size == 0){
+				_isReversed = !_isReversed;
 			}
-			if(isReversed){
-				
-				Renderer renderer = tile.GetComponent<Renderer>();
+			if(_isReversed){
 				renderer.material.color = Color.black;
 			}else{
-				Renderer renderer = tile.GetComponent<Renderer>();
 				renderer.material.color = Color.white;	
 			}
 		}
@@ -126,11 +123,11 @@ namespace ProceduralChessBoardGenerator{
 		}
 		
 		public void ToggleSquareToggle(bool isSquare){
-			isRegular = isSquare;
-			if(isRegular){
-				factor = 1;
+			_isRegular = isSquare;
+			if(_isRegular){
+				_factor = 1;
 			}else{
-				factor = 2;
+				_factor = 2;
 			}
 		}
 		
@@ -140,10 +137,10 @@ namespace ProceduralChessBoardGenerator{
 					foreach(Transform child in transform){
 						GameObject.Destroy(child.gameObject);
 					}
-					tiles.Clear();
+					_tiles.Clear();
 					StartCoroutine(RecreateTilesCor());
 					widthText.text = size.ToString();
-					lengthText.text = (size * factor).ToString();
+					lengthText.text = (size * _factor).ToString();
 				}else{
 					popupText.text = "The Tiles Count needs to be even. Please try again.";
 					StartCoroutine(PopUpWindowCor());
